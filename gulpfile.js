@@ -12,6 +12,18 @@ gulp.task('less', function () {
     .pipe(livereload());
 });
 
+gulp.task('materialize', function () {
+  var materialize_path = './node_modules/materialize-css/dist/';
+  gulp.src(materialize_path + 'css/materialize.min.css')
+    .pipe(gulp.dest('./dist/css'));
+  gulp.src(materialize_path + 'js/materialize.min.js')
+    .pipe(gulp.dest('./dist/js'));
+  gulp.src(materialize_path + 'font/material-design-icons/*')
+    .pipe(gulp.dest('./dist/font/material-design-icons'));
+  gulp.src(materialize_path + 'font/roboto/*')
+    .pipe(gulp.dest('./dist/font/roboto'));
+});
+
 gulp.task('watch', function() {
   gulp.watch('./public/css/*.less', ['less']);
 });
@@ -34,6 +46,7 @@ gulp.task('develop', function () {
 });
 
 gulp.task('default', [
+  'materialize',
   'less',
   'develop',
   'watch'

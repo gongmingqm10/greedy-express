@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "coffee-script": "^1.9.1",
+    "materialize-css": "^0.97.1",
     "gulp": "^3.9.0",
     "gulp-less": "^3.0.1",
     "gulp-nodemon": "^2.0.2",
