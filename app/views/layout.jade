@@ -2,25 +2,37 @@ doctype html
 html(lang='en')
   head
     meta(charset='UTF-8')
-    meta(name='viewport', content='width=device-width')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
     title= title
     block css
+      link(rel='stylesheet', href='http://fonts.googleapis.com/icon?family=Material+Icons')
       link(rel='stylesheet', href='/css/base.css')
     block js
       script(src='/js/jquery-2.1.1.min.js')
       script(src='/js/materialize.min.js')
+      script(src='/js/base.js')
       if ENV_DEVELOPMENT
         script(src='http://localhost:35729/livereload.js')
   body
-    nav
-      .nav-wrapper.container
-        a.branch-logo Open Party
-        ul#nav-mobile.right.hide-on-med-and-down
-          li
-            a(href="/") 活动
-          li
-            a(href="/statistics") 统计
-          li
-            a 管理员
+    .navbar-fixed
+      nav
+        .nav-wrapper.container
+          a.branch-logo Ming Gong
+          a.button-collapse(data-activates="mobile-demo")
+            i.material-icons menu
+          ul#nav-mobile.right.hide-on-med-and-down
+            li
+              a(href="/") 活动
+            li
+              a(href="/statistics") 统计
+            li
+              a 管理员
+          ul#mobile-demo.side-nav
+            li
+              a(href="/") 活动
+            li
+              a(href="/statistics") 统计
+            li
+              a 管理员
     .container
       block content

@@ -4,6 +4,7 @@ var gulp = require('gulp'),
   livereload = require('gulp-livereload'),
   less = require('gulp-less');
   minify = require('gulp-minify');
+  coffee = require('gulp-coffee');
 
 gulp.task('less', function () {
   gulp.src('./public/css/*.less')
@@ -16,6 +17,12 @@ gulp.task('less', function () {
 gulp.task('javascript', function () {
   gulp.src('./public/js/*.min.js')
     .pipe(gulp.dest('./dist/js'));
+});
+
+gulp.task('coffee', function () {
+  gulp.src('./public/js/*.coffee')
+    .pipe(coffee({bare: true}))
+    .pipe(gulp.dest('./dist/js'))
 });
 
 gulp.task('materialize', function () {
@@ -56,6 +63,7 @@ gulp.task('default', [
   'materialize',
   'less',
   'javascript',
+  'coffee',
   'develop',
   'watch'
 ]);
