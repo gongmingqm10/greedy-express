@@ -28,14 +28,9 @@ module.exports = (app, config) ->
   app.use express.static config.root + '/dist'
   app.use methodOverride()
 
-  router = express.Router()
-  router.use((req, res, next) ->
-    # this is the middleware filter
-    next()
-  )
   controllers = glob.sync config.root + '/app/controllers/**/*.coffee'
   controllers.forEach (controller) ->
-    app.use '/', require(controller)(router)
+    require(controller)(app)
 
   # catch 404 and forward to error handler
   app.use (req, res, next) ->
