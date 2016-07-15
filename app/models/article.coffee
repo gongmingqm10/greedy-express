@@ -1,5 +1,3 @@
-# Example model
-
 mongoose = require 'mongoose'
 Schema   = mongoose.Schema
 
@@ -13,4 +11,3 @@ ArticleSchema.virtual('date')
   .get (-> this._id.getTimestamp())
 
 mongoose.model 'Article', ArticleSchema
-

@@ -31,10 +31,10 @@ gulp.task('materialize', function () {
     .pipe(gulp.dest('./dist/css'));
   gulp.src(materialize_path + 'js/materialize.min.js')
     .pipe(gulp.dest('./dist/js'));
-  gulp.src(materialize_path + 'font/material-design-icons/*')
-    .pipe(gulp.dest('./dist/font/material-design-icons'));
-  gulp.src(materialize_path + 'font/roboto/*')
-    .pipe(gulp.dest('./dist/font/roboto'));
+  gulp.src(materialize_path + 'fonts/material-design-icons/*')
+    .pipe(gulp.dest('./dist/fonts/material-design-icons'));
+  gulp.src(materialize_path + 'fonts/roboto/*')
+    .pipe(gulp.dest('./dist/fonts/roboto'));
 });
 
 gulp.task('watch', function() {
