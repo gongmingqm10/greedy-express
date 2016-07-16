@@ -1,9 +1,9 @@
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
-autoIncrement = require('mongoose-auto-increment')
 modelName = 'Meeting'
 
 schema = new Schema({
+  _id: String,
   title: String,
   content: String,
   room: String,
@@ -13,5 +13,4 @@ schema = new Schema({
   comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}]
 })
 
-schema.plugin(autoIncrement.plugin, modelName)
 mongoose.model modelName, schema

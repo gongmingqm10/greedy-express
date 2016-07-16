@@ -4,6 +4,7 @@ autoIncrement = require('mongoose-auto-increment')
 modelName = 'User'
 
 schema = new Schema({
+  _id: String
   username: String,
   email: String,
   password: String,
@@ -14,5 +15,4 @@ schema = new Schema({
   }
 })
 
-schema.plugin(autoIncrement.plugin, modelName)
 mongoose.model modelName, schema
