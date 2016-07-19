@@ -44,7 +44,6 @@ module.exports = (app) ->
       title: req.body.title,
       desc: req.body.desc
     }
-    console.log "topic from request: " + req.body.desc
     saveTopicToMeeting(req.params.id, hashTopic, (err, topic) ->
       if err
         res.json Response.failure(err.toString())
