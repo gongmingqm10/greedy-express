@@ -25,7 +25,6 @@ module.exports = (app) ->
       res.json Response.failure("Unsupported query role type: " + role)
 
   router.post '/', (req, res) ->
-    #TODO: Verify the essential data!
     user =
       _id: mongoose.Types.ObjectId()
       username: req.body.username,

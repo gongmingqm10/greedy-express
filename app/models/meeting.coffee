@@ -4,8 +4,8 @@ modelName = 'Meeting'
 
 schema = new Schema({
   _id: String,
-  title: String,
-  content: String,
+  title: {type: String, required: true},
+  desc: String,
   room: String,
   startTime: Date,
   endTime: Date,

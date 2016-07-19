@@ -4,7 +4,7 @@ modelName = 'Comment'
 
 schema = new Schema({
   _id: String,
-  content: String,
+  desc: String,
   commentTime: Date,
   author: {type: Schema.Types.ObjectId, ref: 'User'}
 })
