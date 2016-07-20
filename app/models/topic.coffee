@@ -7,6 +7,8 @@ schema = new Schema({
   title: String,
   desc: String,
   comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}]
+}, {
+  timeStamps: true
 })
 
 mongoose.model modelName, schema

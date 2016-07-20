@@ -1,6 +1,5 @@
 mongoose = require 'mongoose'
 Schema   = mongoose.Schema
-autoIncrement = require('mongoose-auto-increment')
 modelName = 'User'
 
 schema = new Schema({
@@ -14,6 +13,8 @@ schema = new Schema({
     required: true,
     enum: ['Leader', 'Secretary', 'Advisor']
   }
+}, {
+  timeStamps: true
 })
 
 mongoose.model modelName, schema

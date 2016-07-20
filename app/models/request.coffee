@@ -8,6 +8,8 @@ schema = new Schema({
   advisor: {type: Schema.Types.ObjectId, ref: 'User'},
   status: {type: String, enum: ['Waiting', 'Confirmed', 'Closed']},
   requestTime: Date
+}, {
+  timeStamps: true
 })
 
 mongoose.model modelName, schema

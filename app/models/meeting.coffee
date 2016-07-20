@@ -11,6 +11,8 @@ schema = new Schema({
   endTime: Date,
   topics: [{type: Schema.Types.ObjectId, ref: 'Topic'}],
   comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}]
+}, {
+  timeStamps: true
 })
 
 mongoose.model modelName, schema
