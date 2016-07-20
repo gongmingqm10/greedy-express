@@ -1,5 +1,6 @@
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
+deepPopulate = require('mongoose-deep-populate')(mongoose)
 modelName = 'Meeting'
 
 schema = new Schema({
@@ -14,5 +15,5 @@ schema = new Schema({
 }, {
   timeStamps: true
 })
-
+schema.plugin(deepPopulate)
 mongoose.model modelName, schema

@@ -40,14 +40,17 @@ module.exports = (app) ->
         res.json Response.success(_id: info._id)
 
   router.post '/login', (req, res) ->
-    queryBuilder = User.findOne(email: req.body.email)
-    queryBuilder.exec (err, user) ->
-      if user && bcrypt.compareSync(req.body.password, user.password)
+    email = req.body.email
+    password = req.body.password
+    return res.json 400, Response.failure('Email or password are required') unless email && password
+    User.findOne({email: email}).select('+password').exec (err, user) ->
+      if user && user.password && bcrypt.compareSync(password, user.password)
         res.json Response.success(
           _id: user._id,
           email: user.email,
           department: user.department,
-          username: user.username
+          username: user.username,
+          role: user.role
         )
       else
         res.json 401, Response.failure("Email or password is not valid")

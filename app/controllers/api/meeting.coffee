@@ -52,7 +52,11 @@ module.exports = (app) ->
       if err
         res.json Response.failure(err.toString())
       else
-        res.json Response.success(meeting)
+        Meeting.deepPopulate meeting, 'comments.author', (err, meeting) ->
+          if err
+            res.json Response.failure(err.toString())
+          else
+            res.json Response.success(meeting)
 
   router.post '/', (req, res) ->
     meeting =
@@ -86,8 +90,7 @@ module.exports = (app) ->
     commentHash = {
       _id: mongoose.Types.ObjectId(),
       author: currentUser,
-      desc: req.body.desc,
-      commentTime: Date.now()
+      desc: req.body.desc
     }
     Comment.create commentHash, (err, comment) ->
       if err
