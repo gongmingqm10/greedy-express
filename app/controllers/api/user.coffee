@@ -13,18 +13,32 @@ encryptPassword = (plainText) ->
 
 module.exports = (app) ->
 
+  currentUser = null
+  router.use (req, res, next) ->
+    userId = req.headers['userid']
+    User.findOne {'_id': userId}, (err, user) ->
+      currentUser = user
+      next()
+
   router.get '/', (req, res) ->
     role = req.query.role
-    if role is 'Advisor'
-      User.find(role: 'Advisor').exec (err, users) ->
-        if err
-          res.json Response.failure(err.toString())
-        else
-          res.json Response.success(users)
-    else
-      res.json Response.failure("Unsupported query role type: " + role)
+    return res.json 400, Response.failure('Missing query param: role') unless role
+    return res.json 401, Response.failure('Advisors do not have permission to list users') if user && user.role isnt 'Advisor'
+    return res.json 403, Response.failure('Try to list leaders information, contact administrators') if role isnt 'Advisor'
+    User.find(role: 'Advisor').exec (err, users) ->
+      if err
+        res.json 500, Response.failure(err.toString())
+      else
+        res.json Response.success(users)
 
   router.post '/', (req, res) ->
+    email = req.body.email
+    password = req.body.password
+    role = req.body.role
+    username = req.body.username
+
+    return res.json 400, Response.failure("Missing required params") unless email && password && role && username
+
     user =
       _id: mongoose.Types.ObjectId()
       username: req.body.username,
@@ -35,7 +49,7 @@ module.exports = (app) ->
 
     User.create user, (err, info) ->
       if err
-        res.json Response.failure(err.toString())
+        res.json 500, Response.failure(err.toString())
       else
         res.json Response.success(_id: info._id)
 

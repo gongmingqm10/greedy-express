@@ -25,12 +25,12 @@ module.exports = (app) ->
     if userId
       User.findOne {'_id': userId}, (err, user) ->
         if err || !user
-          res.json Response.failure('No permission for this api')
+          res.json 401, Response.failure('No permission for this api')
         else
           currentUser = user
           next()
     else
-      res.json Response.failure('Invalid request params')
+      res.json 400, Response.failure('Invalid request params')
 
   router.get '/', (req, res) ->
     populateOpts = [
@@ -39,7 +39,7 @@ module.exports = (app) ->
     ]
     Meeting.find({}).populate(populateOpts).exec (err, meetings) ->
       if err
-        res.json Response.failure(err.toString())
+        res.json 500, Response.failure(err.toString())
       else
         res.json Response.success(meetings)
 
@@ -54,14 +54,17 @@ module.exports = (app) ->
       else
         Meeting.deepPopulate meeting, 'comments.author', (err, meeting) ->
           if err
-            res.json Response.failure(err.toString())
+            res.json 500, Response.failure(err.toString())
           else
             res.json Response.success(meeting)
 
   router.post '/', (req, res) ->
+    title = req.body.title
+    return res.json 400, Response.failure('Required filed missing: title') unless title
+
     meeting =
       _id: mongoose.Types.ObjectId()
-      title: req.body.title,
+      title: title,
       desc: req.body.desc,
       room: req.body.room,
       startTime: req.body.startTime,
@@ -69,36 +72,39 @@ module.exports = (app) ->
 
     Meeting.create meeting, (err, info) ->
       if err
-        res.json Response.failure(err.toString())
+        res.json 500, Response.failure(err.toString())
       else
         res.json Response.success(_id: info._id)
 
   router.post '/:id/topics', (req, res) ->
+    title = req.body.title
+    return res.json 400, Response.failure('Required filed missing: title') unless title
+
     hashTopic = {
       _id: mongoose.Types.ObjectId(),
-      title: req.body.title,
+      title: title,
       desc: req.body.desc
     }
     saveTopicToMeeting(req.params.id, hashTopic, (err, topic) ->
       if err
-        res.json Response.failure(err.toString())
+        res.json 500, Response.failure(err.toString())
       else
         res.json Response.success(topic)
     )
 
   router.post '/:id/comments', (req, res) ->
-    commentHash = {
-      _id: mongoose.Types.ObjectId(),
-      author: currentUser,
-      desc: req.body.desc
-    }
+    desc = req.body.desc
+    return res.json 400, Response.failure('Required filed missing: title') unless desc
+
+    commentHash = {_id: mongoose.Types.ObjectId(), author: currentUser, desc: desc}
+
     Comment.create commentHash, (err, comment) ->
       if err
-        res.json Response.failure(err.toString())
+        res.json 500, Response.failure(err.toString())
       else
         Meeting.update {_id: req.params.id}, {$push: {'comments': comment}}, (error) ->
           if error
-            res.json Response.failure(error.toString())
+            res.json 500, Response.failure(error.toString())
           else
             res.json Response.success(_id: comment._id)
 
