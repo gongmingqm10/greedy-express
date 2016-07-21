@@ -23,7 +23,7 @@ module.exports = (app) ->
   router.get '/', (req, res) ->
     role = req.query.role
     return res.json 400, Response.failure('Missing query param: role') unless role
-    return res.json 401, Response.failure('Advisors do not have permission to list users') if user && user.role isnt 'Advisor'
+    return res.json 401, Response.failure('Strangers do not have permission to list users') unless currentUser
     return res.json 403, Response.failure('Try to list leaders information, contact administrators') if role isnt 'Advisor'
     User.find(role: 'Advisor').exec (err, users) ->
       if err

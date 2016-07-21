@@ -11,7 +11,8 @@ schema = new Schema({
   startTime: Date,
   endTime: Date,
   topics: [{type: Schema.Types.ObjectId, ref: 'Topic'}],
-  comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}]
+  comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}],
+  advisors: [{type: Schema.Types.ObjectId, ref: 'User'}]
 }, {
   timeStamps: true
 })

@@ -17,6 +17,12 @@ saveTopicToMeeting = (meetingId, topicData, callback) ->
       Meeting.update {_id: meetingId}, {$push: {'topics': topic}}, (error) ->
         callback(error, topic)
 
+meetingPopulateOpts = [
+  {path: 'topics', select: '_id title'},
+  {path: 'comments', select: '_id desc author'},
+  {path: 'advisors', select: '_id username email'}
+]
+
 module.exports = (app) ->
   currentUser = null
 
@@ -33,22 +39,14 @@ module.exports = (app) ->
       res.json 400, Response.failure('Invalid request params')
 
   router.get '/', (req, res) ->
-    populateOpts = [
-      {path: 'topics', select: '_id title'},
-      {path: 'comments', select: '_id desc author'}
-    ]
-    Meeting.find({}).populate(populateOpts).exec (err, meetings) ->
+    Meeting.find({}).populate(meetingPopulateOpts).exec (err, meetings) ->
       if err
         res.json 500, Response.failure(err.toString())
       else
         res.json Response.success(meetings)
 
   router.get '/:id', (req, res) ->
-    populateOpts = [
-      {path: 'topics', select: '_id title'},
-      {path: 'comments', select: '_id desc author'}
-    ]
-    Meeting.findOne({_id: req.params.id}).populate(populateOpts).exec (err, meeting) ->
+    Meeting.findOne({_id: req.params.id}).populate(meetingPopulateOpts).exec (err, meeting) ->
       if err
         res.json Response.failure(err.toString())
       else
@@ -107,5 +105,20 @@ module.exports = (app) ->
             res.json 500, Response.failure(error.toString())
           else
             res.json Response.success(_id: comment._id)
+
+  router.post '/:id/advisors', (req, res) ->
+    return res.json 403, Response.failure('Only leader or secretary have access to update advisors') unless currentUser.isAdmin
+    advisors = req.body.advisors
+    User.find({role: 'Advisor', _id: {$in: advisors}}, (err, users) ->
+      if err
+        res.json 500, Response.failure(err.toString())
+      else
+        Meeting.update({_id: req.params.id}, {advisors: users}, (error) ->
+          if error
+            res.json 500, Response.failure(error.toString())
+          else
+            res.json Response.success('Success updated meeting\'s advisors')
+        )
+    )
 
   app.use '/api/meetings', router
