@@ -9,3 +9,5 @@ dist/
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+beanstalk-config.js
+*.zip

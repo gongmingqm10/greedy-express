@@ -2,9 +2,48 @@ var gulp = require('gulp'),
   nodemon = require('gulp-nodemon'),
   plumber = require('gulp-plumber'),
   livereload = require('gulp-livereload'),
-  less = require('gulp-less');
-  minify = require('gulp-minify');
+  less = require('gulp-less'),
+  minify = require('gulp-minify'),
+  del = require('del'),
+  zip = require('gulp-zip'),
+  install = require('gulp-install'),
+  runSequence = require('run-sequence'),
+  awsBeanstalk = require("node-aws-beanstalk"),
   coffee = require('gulp-coffee');
+
+gulp.task('clean', function() {
+  return del(['./dist', './dist.zip']);
+});
+
+gulp.task('node-mods', function() {
+  return gulp.src('./package.json')
+    .pipe(gulp.dest('dist/'))
+    .pipe(install({production: true}));
+});
+
+gulp.task('zip', function() {
+  return gulp.src(['dist/**/*', '!dist/package.json'])
+    .pipe(zip('dist.zip'))
+    .pipe(gulp.dest('./'));
+});
+
+gulp.task('upload', function(callback) {
+  awsBeanstalk.deploy('./dist.zip', require('./beanstalk-config'), callback);
+});
+
+gulp.task('update', function(callback) {
+  //TODO: something wrong with the beanstalk config here, need to fixed.
+  awsBeanstalk.update(require('./beanstalk-config'), callback);
+});
+
+gulp.task('package', function(callback) {
+  return runSequence(
+    ['clean'],
+    [ 'materialize', 'less', 'javascript', 'coffee', 'node-mods'],
+    ['zip'],
+    callback
+  );
+});
 
 gulp.task('less', function () {
   gulp.src('./public/css/*.less')
