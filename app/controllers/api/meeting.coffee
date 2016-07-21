@@ -77,7 +77,7 @@ module.exports = (app) ->
   router.post '/:id/topics', (req, res) ->
     title = req.body.title
     return res.json 400, Response.failure('Required filed missing: title') unless title
-
+    return res.json 403, Response.failure('Create topic request admin permission')  unless currentUser.isAdmin
     hashTopic = {
       _id: mongoose.Types.ObjectId(),
       title: title,
@@ -120,5 +120,28 @@ module.exports = (app) ->
             res.json Response.success('Success updated meeting\'s advisors')
         )
     )
+
+  router.get '/:id/topic/:topicId', (req, res) ->
+    Topic.findOne({_id: req.params.topicId}).populate({path: 'comments', select: '_id desc author createdAt'}).exec (error, topic) ->
+      if error
+        res.json 500, Response.failure(error.toStringt())
+      else
+        res.json Response.success(topic)
+
+  router.post '/:id/topics/:topicId/comments', (req, res) ->
+    desc = req.body.desc
+    return res.json 400, Response.failure('Required filed missing: title') unless desc
+
+    commentHash = {_id: mongoose.Types.ObjectId(), author: currentUser, desc: desc}
+
+    Comment.create commentHash, (err, comment) ->
+      if err
+        res.json 500, Response.failure(err.toString())
+      else
+        Topic.update {_id: req.params.topicId}, {$push: {'comments': comment}}, (error) ->
+          if error
+            res.json 500, Response.failure(error.toString())
+          else
+            res.json Response.success(_id: comment._id)
 
   app.use '/api/meetings', router
