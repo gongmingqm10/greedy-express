@@ -3,10 +3,4 @@ public/components
 .sass-cache
 dist/
 .idea/
-.elasticbeanstalk/
-
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
 *.zip

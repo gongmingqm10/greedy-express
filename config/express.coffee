@@ -24,11 +24,19 @@ module.exports = (app, config) ->
   )
   app.use cookieParser()
   app.use compress()
-  app.use express.static config.root + '/public'
-  app.use express.static config.root + '/dist'
-  app.use methodOverride()
+  if app.locals.ENV_DEVELOPMENT
+    console.log "Development config root = " + config.root
+    app.use express.static config.root + '/dist'
+    resourceFilePath = '/app/controllers/**/*.coffee'
+  else
+    console.log "Production config root = " + config.root
+    app.use '/css', express.static config.root + '/css'
+    app.use '/fonts', express.static config.root + '/fonts'
+    app.use '/js', express.static config.root + '/js'
+    resourceFilePath = '/app/controllers/**/*.js'
 
-  controllers = glob.sync config.root + '/app/controllers/**/*.coffee'
+  app.use methodOverride()
+  controllers = glob.sync config.root + resourceFilePath
   controllers.forEach (controller) ->
     require(controller)(app)
 
