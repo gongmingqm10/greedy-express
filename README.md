@@ -39,4 +39,6 @@ gulp package
 NODE_ENV=production pm2 restart appName,  cd dist && NODE_ENV=production pm2 start app.js (for the first time)
 ```
 
+## 4. Visit the host 'http://54.238.131.129', and believe you can reach it
+
 Congratulations!
