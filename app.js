@@ -11,7 +11,7 @@ db.on('error', function () {
   throw new Error('unable to connect to database at ' + config.db);
 });
 
-var models = glob.sync(config.root + '/app/models/*.coffee');
+var models = glob.sync(config.root + '/app/models/*');
 models.forEach(function (model) {
   require(model);
 });
