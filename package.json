@@ -32,7 +32,6 @@
     "gulp-plumber": "^1.0.0",
     "gulp-zip": "^3.2.0",
     "materialize-css": "^0.97.1",
-    "node-aws-beanstalk": "^3.4.6",
     "run-sequence": "^1.2.2"
   }
 }

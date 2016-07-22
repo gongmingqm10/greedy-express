@@ -8,7 +8,6 @@ var gulp = require('gulp'),
   zip = require('gulp-zip'),
   install = require('gulp-install'),
   runSequence = require('run-sequence'),
-  awsBeanstalk = require("node-aws-beanstalk"),
   coffee = require('gulp-coffee');
 
 gulp.task('clean', function() {
@@ -25,15 +24,6 @@ gulp.task('zip', function() {
   return gulp.src(['dist/**/*', '!dist/package.json'])
     .pipe(zip('dist.zip'))
     .pipe(gulp.dest('./'));
-});
-
-gulp.task('upload', function(callback) {
-  awsBeanstalk.deploy('./dist.zip', require('./beanstalk-config'), callback);
-});
-
-gulp.task('update', function(callback) {
-  //TODO: something wrong with the beanstalk config here, need to fixed.
-  awsBeanstalk.update(require('./beanstalk-config'), callback);
 });
 
 gulp.task('package', function(callback) {
