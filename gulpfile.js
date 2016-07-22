@@ -14,27 +14,6 @@ gulp.task('clean', function() {
   return del(['./dist', './dist.zip']);
 });
 
-gulp.task('node-mods', function() {
-  return gulp.src('./package.json')
-    .pipe(gulp.dest('dist/'))
-    .pipe(install({production: true}));
-});
-
-gulp.task('zip', function() {
-  return gulp.src(['dist/**/*', '!dist/package.json'])
-    .pipe(zip('dist.zip'))
-    .pipe(gulp.dest('./'));
-});
-
-gulp.task('package', function(callback) {
-  return runSequence(
-    ['clean'],
-    [ 'materialize', 'less', 'javascript', 'coffee', 'node-mods'],
-    ['zip'],
-    callback
-  );
-});
-
 gulp.task('less', function () {
   gulp.src('./public/css/*.less')
     .pipe(plumber())
@@ -44,14 +23,29 @@ gulp.task('less', function () {
 });
 
 gulp.task('javascript', function () {
-  gulp.src('./public/js/*.min.js')
+  gulp.src('./public/js/*.js')
     .pipe(gulp.dest('./dist/js'));
+  gulp.src('app.js')
+      .pipe(gulp.dest('./dist/'));
+});
+
+gulp.task('jade', function() {
+  gulp.src('./app/views/*.jade')
+      .pipe(gulp.dest('./dist/app/views/'));
 });
 
 gulp.task('coffee', function () {
   gulp.src('./public/js/*.coffee')
     .pipe(coffee({bare: true}))
-    .pipe(gulp.dest('./dist/js'))
+    .pipe(gulp.dest('./dist/js'));
+
+  gulp.src('./app/**/*.coffee')
+      .pipe(coffee({bare: true}))
+      .pipe(gulp.dest('./dist/app/'));
+
+  gulp.src('./config/*.coffee')
+      .pipe(coffee({bare: true}))
+      .pipe(gulp.dest('./dist/config/'));
 });
 
 gulp.task('materialize', function () {
@@ -86,6 +80,27 @@ gulp.task('develop', function () {
     this.stdout.pipe(process.stdout);
     this.stderr.pipe(process.stderr);
   });
+});
+
+gulp.task('node-mods', function() {
+  return gulp.src('./package.json')
+      .pipe(gulp.dest('dist/'))
+      .pipe(install({production: true}));
+});
+
+gulp.task('zip', function() {
+  return gulp.src(['dist/**/*', '!dist/package.json'])
+      .pipe(zip('dist.zip'))
+      .pipe(gulp.dest('./'));
+});
+
+gulp.task('package', function(callback) {
+  return runSequence(
+      ['clean'],
+      [ 'materialize', 'less', 'javascript', 'jade', 'coffee', 'node-mods'],
+      ['zip'],
+      callback
+  );
 });
 
 gulp.task('default', [
